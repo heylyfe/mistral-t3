@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mistral T3 Cats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#15120F;--panel:#1D1915;--line:#332B24;--text:#FFF8EA;--mute:#A89F92;--acc:#FF8205;--term:#100D0B;
+  --y:#FFD800;--o1:#FFAF00;--o:#FF8205;--o2:#FA500F;--r:#E10500;
+  --bands:linear-gradient(90deg,var(--y) 0 20%,var(--o1) 0 40%,var(--o) 0 60%,var(--o2) 0 80%,var(--r) 0)}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#FFFAEB;--panel:#FFF4DA;--line:#EDE0C4;--text:#1E160F;--mute:#74685A;--acc:#C83C00;--term:#1B1714}}
+:root[data-theme=light]{--bg:#FFFAEB;--panel:#FFF4DA;--line:#EDE0C4;--text:#1E160F;--mute:#74685A;--acc:#C83C00;--term:#1B1714}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 16px 56px}
+.bands{height:6px;background:var(--bands)}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin:22px 0 18px}
+h1{margin:0;font-size:clamp(26px,5vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1}
+h1 span{color:var(--acc)}
+.sub{color:var(--mute);margin:8px 0 0;max-width:60ch}
+.tag{font-size:12px;color:var(--mute);border:1px solid var(--line);padding:3px 8px}
+.term{background:var(--term);color:#F2EADB;border:1px solid #332B24;box-shadow:6px 6px 0 var(--o2)}
+.bar{display:flex;gap:6px;align-items:center;padding:8px 12px;border-bottom:1px solid #2A241F;font-size:12px;color:#968C7F}
+.bar i{width:10px;height:10px;display:block}
+.stage{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;padding:22px 22px 10px}
+.stage img{width:288px;height:216px;image-rendering:pixelated}@media (max-width:420px){.stage img{width:192px;height:144px}}
+.info b{color:var(--o);font-weight:800}
+.info p{margin:4px 0;color:#C9C0B1}
+.info .k{color:#FFAF00}
+.status{display:flex;gap:10px;align-items:center;padding:12px 22px 18px;color:#F2EADB}
+.pulse{color:var(--o);width:1ch}
+.status .w{color:#FFAF00}
+.status .h{color:#857B6E;margin-left:auto;font-size:12px}
+.picker{display:flex;flex-wrap:wrap;gap:6px;padding:0 22px 20px}
+.picker button{font:inherit;font-size:12px;color:#E9E2D4;background:#211C18;border:1px solid #3A322B;padding:4px 9px;cursor:pointer}
+.picker button[aria-pressed=true]{background:var(--o);color:#140A00;border-color:var(--o)}
+h2{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:44px 0 14px;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:18px;height:10px;background:var(--bands)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);padding:14px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.card:hover,.card:focus-visible{border-color:var(--acc);outline:none}
+.card .px{display:grid;place-items:center;height:132px;background:var(--term)}.card img{width:160px;height:120px;image-rendering:pixelated}
+.card.sub img{width:80px;height:112px}
+.card b{display:block;margin-top:10px}
+.card small{color:var(--mute)}
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line)}
+.swatches div{padding:46px 10px 10px;font-size:12px;color:#140A00;font-weight:600}
+.words{display:flex;flex-wrap:wrap;gap:8px}
+.words span{border:1px solid var(--line);padding:3px 9px;background:var(--panel)}
+footer{margin-top:44px;color:var(--mute);font-size:12px}
+footer a{color:var(--acc)}
+@media (max-width:620px){.stage{grid-template-columns:1fr;justify-items:center;text-align:center}.status .h{display:none}}
+</style>
+</head>
+<body>
+<div class="bands"></div>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Mistral <span>T3</span></h1>
+      <p class="sub">The Mistral Large 4 cat, animated for every state your agent is in. A theme for T3 Code in the Mistral rainbow.</p>
+    </div>
+    <span class="tag">v{{VERSION}} · {{COUNT}} cats</span>
+  </header>
+
+  <section class="term" aria-label="Preview">
+    <div class="bar"><i style="background:var(--r)"></i><i style="background:var(--o)"></i><i style="background:var(--y)"></i><span style="margin-left:8px">~/projects/le-code — vibe</span></div>
+    <div class="stage">
+      <img id="big" alt="">
+      <div class="info">
+        <p><b>Mistral Vibe</b> <span style="color:#968C7F">for T3 Code</span></p>
+        <p>mistral-large-4 · <span class="k">le-gros-chaton</span></p>
+        <p>Type <span class="k">/help</span> for more information</p>
+        <p id="desc" style="margin-top:14px;color:#968C7F"></p>
+      </div>
+    </div>
+    <div class="status"><span class="pulse" id="pulse">■</span><span class="w" id="word">Purr-cessing…</span><span class="h">esc to interrupt</span></div>
+    <div class="picker" id="picker" role="group" aria-label="Choose a state"></div>
+  </section>
+
+  <h2>Every cat</h2>
+  <div class="grid" id="grid"></div>
+
+  <h2>The palette</h2>
+  <div class="swatches">
+    <div style="background:#FFD800">Yellow<br>#FFD800</div>
+    <div style="background:#FFAF00">Orange light<br>#FFAF00</div>
+    <div style="background:#FF8205">Orange<br>#FF8205</div>
+    <div style="background:#FA500F">Orange dark<br>#FA500F</div>
+    <div style="background:#E10500;color:#fff">Red<br>#E10500</div>
+  </div>
+
+  <h2>Status words</h2>
+  <div class="words" id="words"></div>
+
+  <footer><a href="https://github.com/heylyfe/mistral-t3">github.com/heylyfe/mistral-t3</a> · Unofficial fan project, not affiliated with Mistral AI or T3 Tools. Mistral, Le Chat and Vibe are trademarks of Mistral AI.</footer>
+</div>
+<script>
+const CARDS = /*CARDS*/[];
+const WORDS = ['Purr-cessing','Mewditating','Kneading','Pouncing','Ronronnant','Vibing','Catculating','Devstral-ing','Chasing the cursor','Croissant-ing','Miaou-ing','Batting at bugs','Chonking','Grooming the code','Napping on the keyboard','Mistral-ing','Faisant la sieste','Ooh-là-là-ing','Knocking things off the table','Sniffing the stack trace','Landing on its feet'];
+const big = document.getElementById('big'), desc = document.getElementById('desc'), picker = document.getElementById('picker'), grid = document.getElementById('grid');
+function show(id){
+  const c = CARDS.find(x => x.id === id); big.src = c.src; big.style.cssText = id === 'subagent' ? 'width:140px;height:196px' : ''; big.alt = c.label + ' cat';
+  desc.textContent = '› ' + c.label.toLowerCase() + ': ' + c.note;
+  for (const b of picker.children) b.setAttribute('aria-pressed', b.dataset.id === id);
+}
+for (const c of CARDS){
+  const b = document.createElement('button'); b.textContent = c.label; b.dataset.id = c.id; b.onclick = () => show(c.id); picker.append(b);
+  const card = document.createElement('button'); card.className = 'card' + (c.id === 'subagent' ? ' sub' : '');
+  card.innerHTML = `<div class="px"><img alt="" src="${c.src}"></div><b>${c.label}</b><small>${c.note}</small>`;
+  card.onclick = () => { show(c.id); scrollTo({top:0,behavior:'smooth'}); };
+  grid.append(card);
+}
+document.getElementById('words').innerHTML = WORDS.map(w => `<span>${w}…</span>`).join('');
+show('working');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!reduce){
+  let f = 0, i = 0; const pulse = document.getElementById('pulse'), word = document.getElementById('word');
+  setInterval(() => { pulse.textContent = (f++ % 10) < 6 ? '■' : '□'; }, 100);
+  setInterval(() => { word.textContent = WORDS[++i % WORDS.length] + '…'; }, 2200);
+}
+</script>
+</body>
+</html>

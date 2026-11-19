@@ -1,0 +1,51 @@
+/* Mistral T3: where the cats go and which state wins.
+   Hooks T3 Code nightly renders: data-timeline-row-kind, data-v2-item-type,
+   data-pending-user-input-toggle, the sidebar row aria-label status words,
+   the lucide icon of the live tool, and .live-activity-focus while compacting.
+   Rules sit in :where() (specificity 0), so later = more urgent = wins. */
+
+/* 1. Big cat on the message box, following the open thread */
+:where(body){--mr:mc-rest;--mn:var(--mc-idle)}
+:where(body:has([data-timeline-row-kind=working],[data-sidebar-row][aria-current=page]:is([aria-label*=", Working"],[aria-label*=", Goal"],[aria-label*=", Setting up"]))){--mr:none;--mn:var(--mc-working)}
+:where(body:has([data-timeline-row-kind=thinking],[data-timeline-row-kind=work-live] .lucide-brain)){--mr:none;--mn:var(--mc-thinking)}
+:where(body:has([data-timeline-row-kind=work-live] .lucide-square-pen)){--mr:none;--mn:var(--mc-editing)}
+:where(body:has([data-timeline-row-kind=work-live] .lucide-terminal)){--mr:none;--mn:var(--mc-terminal)}
+:where(body:has([data-timeline-row-kind=work-live] .lucide-list-todo)){--mr:none;--mn:var(--mc-planning)}
+:where(body:has([data-timeline-row-kind=work-live] :is(.lucide-eye,.lucide-search))){--mr:none;--mn:var(--mc-reading)}
+:where(body:has([data-timeline-row-kind=work-live] .lucide-globe)){--mr:none;--mn:var(--mc-browsing)}
+:where(body:has([data-v2-item-type=subagent]:is([aria-description=Running],[aria-description=Queued]),[data-timeline-row-kind=work-live] .lucide-bot)){--mr:none;--mn:var(--mc-delegating)}
+:where(body:has([data-timeline-row-kind=working] .live-activity-focus)){--mr:none;--mn:var(--mc-compacting)}
+:where(body:has([data-v2-item-type=approval_request],[data-pending-user-input-toggle],[data-sidebar-row][aria-current=page]:is([aria-label*=", Approval"],[aria-label*=", Input"],[aria-label*=", Waiting"],[aria-label*=", Request"]))){--mr:none;--mn:var(--mc-waiting)}
+:where(body:has([data-sidebar-row][aria-current=page]:is([aria-label*=", Failed"],[aria-label*=", Limited"]))){--mr:none;--mn:var(--mc-error)}
+/* you are typing: the cat perks its ears (placeholder gone = there is text) */
+:where([data-chat-composer-form]:has(.composer-tiptap:focus):not(:has(.text-placeholder))){--mr:none;--mn:var(--mc-listening)}
+
+[data-chat-composer-form]{position:relative}
+[data-chat-composer-form]::before{content:"";position:absolute;z-index:2;right:22px;bottom:calc(100% - 9px);width:128px;height:96px;image-rendering:pixelated;pointer-events:none;background:var(--mn) center/contain no-repeat;
+  /* resting: cheer, idle, a quick groom, idle, le gros chaton, then nap */
+  animation:mc-rest 180s linear forwards;animation-name:var(--mr)}
+@keyframes mc-rest{0%,1.5%{background-image:var(--mc-done)}3%,20%{background-image:var(--mc-idle)}21%,26%{background-image:var(--mc-grooming)}27%,60%{background-image:var(--mc-idle)}61%,99%{background-image:var(--mc-chonk)}100%{background-image:var(--mc-sleeping)}}
+
+/* 2. Small cat beside "Working for 12s" */
+[data-timeline-row-kind=working]{display:flex;align-items:center;gap:6px}
+[data-timeline-row-kind=working]>*{flex:1;min-width:0}
+[data-timeline-row-kind=working]::before{content:"";flex:none;width:32px;height:24px;margin:-8px 0 -4px;image-rendering:pixelated;background:var(--mc-working) center/contain no-repeat}
+[data-timeline-row-kind=working]:has(.live-activity-focus)::before{background-image:var(--mc-compacting)}
+
+/* 3. A trotting kitten beside each running subagent */
+[data-v2-item-type=subagent]:is([aria-description=Running],[aria-description=Queued])::before{content:"";flex:none;width:20px;height:28px;image-rendering:pixelated;background:var(--mc-subagent) center/contain no-repeat}
+
+/* 4. Sidebar: a cat per thread status (hidden on hover so the buttons stay clickable) */
+[data-sidebar-row]{position:relative}
+[data-sidebar-row]::after{content:"";position:absolute;right:4px;top:50%;translate:0 -50%;width:32px;height:24px;image-rendering:pixelated;pointer-events:none;background:var(--ms,none) center/contain no-repeat;transition:opacity .12s}
+[data-sidebar-row]:hover::after{opacity:0}
+:where([data-sidebar-row]:is([aria-label*=", Working"],[aria-label*=", Goal"],[aria-label*=", Setting up"])){--ms:var(--mc-working)}
+:where([data-sidebar-row]:is([aria-label*=", Approval"],[aria-label*=", Input"],[aria-label*=", Waiting"],[aria-label*=", Request"])){--ms:var(--mc-waiting)}
+:where([data-sidebar-row]:is([aria-label*=", Failed"],[aria-label*=", Limited"])){--ms:var(--mc-error)}
+:where([data-sidebar-row][aria-label*=", Done"]){--ms:var(--mc-done)}
+:where([data-sidebar-row][aria-label*=", Woke"]){--ms:var(--mc-sleeping)}
+
+/* 5. Empty chat: a kitten trots along the top of the message box towards the big cat */
+[data-workspace-area=conversation]:not(:has([data-timeline-row-kind],[data-v2-item-type],[data-timeline-loading])) [data-chat-composer-form]::after{content:"";position:absolute;z-index:2;left:24px;bottom:calc(100% - 1px);width:20px;height:28px;image-rendering:pixelated;pointer-events:none;background:var(--mc-subagent) center/contain no-repeat;animation:mc-trot 12s steps(48) infinite alternate}
+@keyframes mc-trot{to{left:calc(100% - 160px)}}
+@media (prefers-reduced-motion:reduce){[data-chat-composer-form]::after{animation:none}}

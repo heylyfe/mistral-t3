@@ -1,0 +1,24 @@
+name: Bug report
+description: A cat is in the wrong place, shows the wrong state, or the theme won't load
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened?
+      description: Include a screenshot if you can.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: T3 Code version
+      placeholder: nightly 2026-11-19
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Mistral T3 version
+      placeholder: 1.0.0-beta.1
+  - type: dropdown
+    attributes:
+      label: Platform
+      options: [Desktop (macOS), Desktop (Windows), Desktop (Linux), Web]

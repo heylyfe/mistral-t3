@@ -1,0 +1,33 @@
+{
+  "name": "mistral-t3",
+  "version": "1.0.0-beta.1",
+  "private": true,
+  "description": "Mistral T3: the animated Mistral Large 4 cat for every agent state in T3 Code, in the Mistral rainbow",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/theme.test.mjs test/browser.test.mjs",
+    "preview": "node test/mock-page.mjs"
+  },
+  "keywords": [
+    "t3code",
+    "t3-code",
+    "theme",
+    "mistral",
+    "vibe",
+    "pixel-art",
+    "svg",
+    "css",
+    "cat"
+  ],
+  "homepage": "https://github.com/heylyfe/mistral-t3#readme",
+  "bugs": "https://github.com/heylyfe/mistral-t3/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heylyfe/mistral-t3.git"
+  }
+}

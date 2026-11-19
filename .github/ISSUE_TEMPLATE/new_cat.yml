@@ -1,0 +1,9 @@
+name: New cat idea
+description: Suggest a new animation or state for the cat
+labels: [new cat]
+body:
+  - type: textarea
+    attributes:
+      label: What should the cat do, and when?
+    validations:
+      required: true

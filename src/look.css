@@ -1,0 +1,28 @@
+/* Vibe Chat look: Mistral's pixel blocks, rainbow bands and sharp corners.
+   Kept to light, safe touches; colours come from the theme palette. */
+:root{--vy:#FFD800;--vo1:#FFAF00;--vo:#FF8205;--vo2:#FA500F;--vr0:#E10500;
+  --vbands:linear-gradient(90deg,var(--vy) 0 20%,var(--vo1) 0 40%,var(--vo) 0 60%,var(--vo2) 0 80%,var(--vr0) 0);
+  --vbandsv:linear-gradient(180deg,var(--vy) 0 20%,var(--vo1) 0 40%,var(--vo) 0 60%,var(--vo2) 0 80%,var(--vr0) 0);
+  --radius:.3rem}
+::selection{background:color-mix(in srgb,var(--vo) 45%,transparent)}
+*{scrollbar-color:color-mix(in srgb,var(--vo) 55%,transparent) transparent}
+
+/* brand: T3 Code home gets a "Vibe" tag in the rainbow */
+a[aria-label="T3 Code home"]{gap:6px;align-items:center}
+a[aria-label="T3 Code home"]::after{content:"VIBE";font:700 10.5px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;padding:3px 5px 3px 7px;color:#140A00;background:var(--vbands)}
+
+/* sidebar: a thin rainbow edge, like the stacked bands of the pixel M */
+[data-slot=sidebar-inner]{background-image:var(--vbandsv);background-size:3px 100%;background-position:right top;background-repeat:no-repeat}
+
+/* message box: a rainbow rule on top, square pixel corners on the send button */
+[data-chat-composer-form]{background-image:var(--vbands);background-size:calc(100% - 24px) 2px;background-position:12px 0;background-repeat:no-repeat}
+[data-chat-composer-form] button[type=submit]{border-radius:3px!important;background:var(--vo)!important;color:#140A00!important;box-shadow:2px 2px 0 var(--vr0)!important}
+[data-chat-composer-form] button[type=submit] svg{color:#140A00!important;stroke:#140A00!important}
+[data-chat-composer-form] button[type=submit]:hover:not(:disabled){background:var(--vo1)!important}
+[data-chat-composer-form] button[type=submit]:disabled{background:color-mix(in srgb,var(--vo) 25%,transparent)!important;box-shadow:none!important}
+
+/* code reads like a terminal */
+pre,code,kbd{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+:not(pre)>code{color:var(--vo1)}
+:root:not(.dark) :not(pre)>code{color:#B23A00}
+
