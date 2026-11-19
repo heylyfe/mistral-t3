@@ -394,7 +394,61 @@ S.chonk = {
   ),
 };
 
-const ORDER = ['idle', 'thinking', 'working', 'reading', 'delegating', 'subagent', 'waiting', 'error', 'done', 'sleeping', 'compacting', 'terminal', 'editing', 'browsing', 'planning', 'listening', 'grooming', 'chonk'];
+// ── Sidebar and settings props ─────────────────────────────────────
+// A tiny cat head that peeks up from under a hovered row (the pop-up itself is CSS on the row).
+// The ear pixel at (1,0) is drawn by the twitch frames instead.
+const PEEK = ['.....#.', ...TINY.slice(1, 5).map((r) => r.slice(0, 7).replace(/k/g, '#'))];
+S.peek = {
+  label: 'Peek', note: 'peeks up from under a chat you hover',
+  svg: svg(
+    drawMap(PEEK) + P([[2, 3], [4, 3]], INK, 'Y') + P([[3, 4]], PINK)
+      + `<g class='E'><g class='f1'>${P([[1, 0]], CREAM)}</g><g class='f2'>${P([[0, 0]], CREAM)}</g></g>`,
+    BASE + FLIP('.E', '2.6s') + BLINK.replace('4s', '2.2s'),
+    { w: 7, h: 5 },
+  ),
+};
+
+// The big cat's paw, reaching in from the left: orange arm, cream pads, pink beans, claws out.
+const PAW = [
+  '..........eeeee...',
+  '.........ewwwwke..',
+  'fffffffffwwwwwwwe.',
+  'fffffffffwkkkwwke.',
+  'fffffffffwkkkkwwe.',
+  'fffffffffwkkkwwke.',
+  'fffffffffwwwwwwwe.',
+  '.........ewwwwke..',
+  '..........eeeee...',
+];
+const at = (map, ch) => map.flatMap((r, y) => [...r].map((c, x) => (c === ch ? [x, y] : null)).filter(Boolean));
+S.paw = {
+  label: 'Paw', note: 'swipes at a chat you drag or settle',
+  svg: svg(
+    fur(at(PAW, 'f'), ([x, y]) => 'abc'[(x + y) % 3]) + P(at(PAW, 'e'), FUR.b) + P(at(PAW, 'w'), FUR.p) + P(at(PAW, 'k'), PINK)
+      + P([[16, 1], [17, 3], [17, 5], [16, 7]], '#FFFFFF', 'cl'),
+    BASE + '.cl{animation:F1 .5s steps(1) infinite}',
+    { w: 18, h: 9 },
+  ),
+};
+
+// Appearance settings: the cat paints the Mistral rainbow onto a canvas.
+S.painting = {
+  label: 'Painting', note: 'paints the Mistral rainbow (Appearance settings)',
+  svg: svg(
+    P(rows({ 21: [[1, 1], [6, 6]], 22: [[0, 1], [6, 7]] }), '#8A5A2B')
+      + P(rows(Object.fromEntries([...Array(12)].map((_, i) => [9 + i, [0, 7]]))), '#8A5A2B')
+      + P(rows(Object.fromEntries([...Array(10)].map((_, i) => [10 + i, [1, 6]]))), CREAM)
+      + [Y, OL, O, OD, RD].map((c, i) => P(rows({ [10 + i * 2]: [1, 6], [11 + i * 2]: [1, 6] }), c, `bd b${i}`)).join('')
+      + cat({ eyes: 'happy' })
+      + `<g class='BR'>${P([[9, 14], [10, 15], [11, 16]], '#8A5A2B')}${P([[8, 13]], RD, 'tip')}</g>`,
+    BASE + SWAY() + '.Y{transform:translateX(-1px)}'
+      + '.bd{opacity:0;animation:c 4s steps(1) infinite}' + [0, 1, 2, 3, 4].map((i) => `.b${i}{animation-name:b${i}}@keyframes b${i}{${8 + i * 16}%,94%{opacity:1}}`).join('')
+      + '.BR,.pl{animation:p .5s steps(1) infinite}' + hop('p', [[0, 0, 0], [50, 0, 2]])
+      + `.tip{animation:t 4s steps(1) infinite}@keyframes t{0%{fill:${Y}}24%{fill:${OL}}40%{fill:${O}}56%{fill:${OD}}72%{fill:${RD}}}`,
+  ),
+};
+
+const ORDER = ['idle', 'thinking', 'working', 'reading', 'delegating', 'subagent', 'waiting', 'error', 'done', 'sleeping', 'compacting', 'terminal', 'editing', 'browsing', 'planning', 'listening', 'grooming', 'chonk', 'painting', 'peek', 'paw'];
 
 // ── Outputs ────────────────────────────────────────────────────────
 const uri = (s) => 'data:image/svg+xml,' + s.replace(/%/g, '%25').replace(/#/g, '%23').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, "'");

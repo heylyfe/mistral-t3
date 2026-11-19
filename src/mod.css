@@ -1,7 +1,8 @@
 /* Mistral T3: where the cats go and which state wins.
    Hooks T3 Code nightly renders: data-timeline-row-kind, data-v2-item-type,
    data-pending-user-input-toggle, the sidebar row aria-label status words,
-   the lucide icon of the live tool, and .live-activity-focus while compacting.
+   the lucide icon of the live tool, .live-activity-focus while compacting, the verb badge
+   on a dragged sidebar row, and data-settings-section / data-settings-page-scroll in Settings.
    Rules sit in :where() (specificity 0), so later = more urgent = wins. */
 
 /* 1. Big cat on the message box, following the open thread */
@@ -48,4 +49,44 @@
 /* 5. Empty chat: a kitten trots along the top of the message box towards the big cat */
 [data-workspace-area=conversation]:not(:has([data-timeline-row-kind],[data-v2-item-type],[data-timeline-loading])) [data-chat-composer-form]::after{content:"";position:absolute;z-index:2;left:24px;bottom:calc(100% - 1px);width:20px;height:28px;image-rendering:pixelated;pointer-events:none;background:var(--mc-subagent) center/contain no-repeat;animation:mc-trot 12s steps(48) infinite alternate}
 @keyframes mc-trot{to{left:calc(100% - 160px)}}
-@media (prefers-reduced-motion:reduce){[data-chat-composer-form]::after{animation:none}}
+
+/* 6. Sidebar hover: a tiny cat peeks up from under the chat (behind the title, below the text) */
+[data-sidebar-row]{isolation:isolate}
+[data-sidebar-row]:hover::before,[data-settings-section]:hover:not([aria-current=page])::before{content:"";position:absolute;z-index:-1;left:calc(50% - 7px);bottom:0;width:14px;height:10px;image-rendering:pixelated;pointer-events:none;background:var(--mc-peek) center/contain no-repeat;animation:mc-peek .24s steps(3) both}
+@keyframes mc-peek{from{translate:0 12px}}
+
+/* 7. Dragging a chat (moving, pinning, settling) or sweeping several: the cat's paw bats at it.
+      T3 Code shows a verb badge on the row while you do it; Settle (check icon) gets a second paw. */
+[data-sidebar-row]:is([class*=shadow-lg],:has([role=status][class*="border-primary/40"]))::before{content:"";position:absolute;z-index:1;left:0;right:auto;bottom:auto;top:calc(50% - 9px);width:36px;height:18px;image-rendering:pixelated;pointer-events:none;background:var(--mc-paw) center/contain no-repeat;animation:mc-bat .9s steps(1) infinite}
+[data-sidebar-row]:has([role=status][class*="border-primary/40"] .lucide-circle-check)::after{right:0;top:calc(50% - 9px);translate:none;scale:-1 1;width:36px;height:18px;opacity:1;background:var(--mc-paw) center/contain no-repeat;animation:mc-batR .9s steps(1) infinite .45s}
+@keyframes mc-bat{0%,80%,100%{translate:-36px 0}20%{translate:-24px 0}35%{translate:-12px 0}50%{translate:-4px 0}65%{translate:-16px 0}}
+@keyframes mc-batR{0%,80%,100%{translate:36px 0}20%{translate:24px 0}35%{translate:12px 0}50%{translate:4px 0}65%{translate:16px 0}}
+
+/* 8. The "Settled, Undo" notice under the threads: one paw swipe as it appears */
+[class*="starting:opacity-0"][class*=flex-row-reverse]{position:relative}
+[class*="starting:opacity-0"][class*=flex-row-reverse]::before{content:"";position:absolute;z-index:1;left:0;top:calc(50% - 9px);width:36px;height:18px;image-rendering:pixelated;pointer-events:none;background:var(--mc-paw) center/contain no-repeat;translate:-40px 0;animation:mc-swat 1.2s steps(1) both}
+@keyframes mc-swat{0%,90%,100%{translate:-40px 0}12%{translate:-28px 0}22%{translate:-14px 0}32%{translate:0 0}42%{translate:10px 0}56%{translate:-4px 0}72%{translate:-22px 0}}
+
+/* 9. Settings: a kitten sits on the section you are in, a tiny cat peeks from the others on hover,
+      and a cat in the corner of the page matches the section */
+[data-settings-section]{position:relative;isolation:isolate}
+[data-settings-section][aria-current=page]::after{content:"";position:absolute;right:6px;bottom:2px;width:20px;height:28px;image-rendering:pixelated;pointer-events:none;background:var(--mc-subagent) center/contain no-repeat}
+@media (max-width:767px){[data-settings-section]::after{display:none}}
+:where(body){--mset:var(--mc-grooming)}
+:where(body:has([data-settings-section="/settings/general"][aria-current=page])){--mset:var(--mc-idle)}
+:where(body:has([data-settings-section="/settings/appearance"][aria-current=page])){--mset:var(--mc-painting)}
+:where(body:has([data-settings-section]:is([data-settings-section="/settings/chat"],[data-settings-section="/settings/voice"])[aria-current=page])){--mset:var(--mc-listening)}
+:where(body:has([data-settings-section]:is([data-settings-section="/settings/diffs"],[data-settings-section="/settings/source-control"])[aria-current=page])){--mset:var(--mc-editing)}
+:where(body:has([data-settings-section="/settings/keybindings"][aria-current=page])){--mset:var(--mc-working)}
+:where(body:has([data-settings-section]:is([data-settings-section="/settings/providers"],[data-settings-section="/settings/integrations"])[aria-current=page])){--mset:var(--mc-delegating)}
+:where(body:has([data-settings-section]:is([data-settings-section="/settings/connections"],[data-settings-section="/settings/browser"],[data-settings-section="/settings/devices"])[aria-current=page])){--mset:var(--mc-browsing)}
+:where(body:has([data-settings-section]:is([data-settings-section="/settings/projects"],[data-settings-section="/settings/snap-shot"],[data-settings-section="/settings/secrets"],[data-settings-section="/settings/open-source-licenses"])[aria-current=page])){--mset:var(--mc-reading)}
+:where(body:has([data-settings-section]:is([data-settings-section="/settings/threads"],[data-settings-section="/settings/scheduled-tasks"])[aria-current=page])){--mset:var(--mc-planning)}
+:where(body:has([data-settings-section="/settings/archived"][aria-current=page])){--mset:var(--mc-sleeping)}
+:where(body:has([data-settings-section]:is([data-settings-section="/settings/diagnostics"],[data-settings-section="/settings/worktrees"])[aria-current=page])){--mset:var(--mc-terminal)}
+:where(body:has([data-settings-section]:is([data-settings-section="/settings/maintenance"],[data-settings-section="/settings/storage"])[aria-current=page])){--mset:var(--mc-compacting)}
+:where(body:has([data-settings-section="/settings/labs"][aria-current=page])){--mset:var(--mc-thinking)}
+:where(body:has([data-settings-section="/settings/about"][aria-current=page])){--mset:var(--mc-chonk)}
+[data-settings-page-scroll]::after{content:"";display:block;position:sticky;bottom:12px;width:64px;height:48px;margin:24px 16px 0 auto;image-rendering:pixelated;pointer-events:none;background:var(--mset) center/contain no-repeat}
+
+@media (prefers-reduced-motion:reduce){[data-chat-composer-form]::after,[data-sidebar-row]::before,[data-sidebar-row]::after,[data-settings-section]::before{animation:none}[class*="starting:opacity-0"]::before{display:none}}

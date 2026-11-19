@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const STATE_IDS = ['idle', 'thinking', 'working', 'reading', 'delegating', 'subagent', 'waiting', 'error', 'done', 'sleeping', 'compacting', 'terminal', 'editing', 'browsing', 'planning', 'listening', 'grooming', 'chonk'];
+export const STATE_IDS = ['idle', 'thinking', 'working', 'reading', 'delegating', 'subagent', 'waiting', 'error', 'done', 'sleeping', 'compacting', 'terminal', 'editing', 'browsing', 'planning', 'listening', 'grooming', 'chonk', 'painting', 'peek', 'paw'];
 
 const icon = (name) => `<svg class="lucide lucide-${name}" width="14" height="14"></svg>`;
 const live = (name) => `<div data-timeline-row-kind="work-live"><span class="live-tool-shine">${icon(name)} running</span></div>`;
@@ -35,6 +35,27 @@ export const CASES = [
 // [sidebar status word, expected sidebar cat]
 export const SIDEBAR = [['Working', 'working'], ['Approval', 'waiting'], ['Input', 'waiting'], ['Failed', 'error'], ['Done', 'done'], ['Woke', 'sleeping'], ['Idle', null]];
 
+// [settings section, expected corner cat]
+export const SETTINGS = [['appearance', 'painting'], ['keybindings', 'working'], ['archived', 'sleeping'], ['providers', 'delegating'], ['about', 'chonk'], ['general', 'idle'], ['something-new', 'grooming']];
+// Rows being dragged, as T3 Code renders them: the dragged row gets shadow-lg, and a verb badge shows on the row.
+const badge = (iconName, verb) => `<span role="status" class="pointer-events-none ml-auto inline-flex border border-primary/40 bg-primary/10 text-primary">${icon(iconName)}${verb}</span>`;
+const DRAG_ROWS = `<a data-sidebar-row data-drag="moving" class="relative overflow-hidden shadow-lg" aria-label="Moved, Done, my-app">Moved</a>
+  <a data-sidebar-row data-drag="pinning" aria-label="Pinning, Done, my-app">Pinning ${badge('pin', 'Pin')}</a>
+  <a data-sidebar-row data-drag="settling" aria-label="Settling, Done, my-app">Settling ${badge('circle-check', 'Settle')}</a>`;
+const NOTICE = '<div data-notice class="flex h-6 min-w-0 flex-1 flex-row-reverse overflow-hidden starting:opacity-0">Settled, Undo</div>';
+
+const settingsFrame = (theme, section) => `<!doctype html><html class="dark"><head><meta charset="utf-8">
+<style>body{margin:0;font:13px system-ui,sans-serif;background:#15120F;color:#FFF8EA;display:flex;height:100vh}
+nav{width:190px;background:#1B1714;padding:40px 6px}nav a{display:flex;height:32px;align-items:center;padding:0 10px;color:#E9E2D4}
+nav a[aria-current]{background:#2E2620}[data-settings-page-scroll]{flex:1;overflow-y:auto}.page{max-width:560px;margin:0 auto;padding:30px}
+.row{height:44px;border-bottom:1px solid #332B24}</style>
+<style id="theme">${theme}</style></head><body>
+<nav>${['general', 'appearance', 'keybindings', 'providers', 'archived', 'about', section].filter((v, i, a) => a.indexOf(v) === i)
+    .map((id) => `<a data-settings-section="/settings/${id}"${id === section ? ' aria-current="page"' : ''}>${id}</a>`).join('')}</nav>
+<div data-settings-page-scroll><div class="page"><h2>${section}</h2>${'<div class="row"></div>'.repeat(6)}</div></div>
+<script>${fs.readFileSync(path.join(ROOT, 'test/t3/loader.js'), 'utf8')}</script>
+</body></html>`;
+
 const frame = (theme, timeline, status, { typing = false, preview = false } = {}) => `<!doctype html><html class="dark"><head><meta charset="utf-8">
 <style>
 body{margin:0;font:13px system-ui,sans-serif;background:#15120F;color:#FFF8EA;display:flex;height:100vh}
@@ -49,6 +70,7 @@ main{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:
 <div data-slot="sidebar"><div data-slot="sidebar-inner">
   <a data-sidebar-row aria-current="page" aria-label="Fix the bug, ${status}, my-app">Fix the bug</a>
   ${SIDEBAR.map(([w]) => `<a data-sidebar-row aria-label="Thread ${w}, ${w}, my-app">Thread · ${w}</a>`).join('')}
+  ${DRAG_ROWS}${NOTICE}
 </div></div>
 <main data-workspace-area="conversation">${timeline}
 <form data-chat-composer-form><div class="composer-tiptap" tabindex="0">${typing ? 'hello there' : '<p class="text-placeholder">Ask anything</p>'}</div><button type="submit">↑</button></form>
@@ -63,17 +85,32 @@ function theme() {
 /** The page the browser test loads: every case in its own iframe, results written to <pre id=results>. */
 export function buildTestPage() {
   const css = theme();
-  const all = [...CASES.map(([name, tl, st]) => [name, frame(css, tl, st)]), ['typing a message', frame(css, user + working(), 'Working', { typing: true })]];
+  const all = [...CASES.map(([name, tl, st]) => [name, frame(css, tl, st)]), ['typing a message', frame(css, user + working(), 'Working', { typing: true })],
+    ...SETTINGS.map(([id]) => ['settings:' + id, settingsFrame(css, id)])];
   return `<!doctype html><meta charset="utf-8"><body>
 ${all.map(([name, html], i) => `<iframe id="f${i}" data-name="${name.replace(/"/g, '')}" width="800" height="400" srcdoc="${html.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"></iframe>`).join('\n')}
 <pre id="results"></pre>
 <script>
 const ids = ${JSON.stringify(STATE_IDS)};
 const which = (doc, value) => { const root = getComputedStyle(doc.documentElement); return ids.find((id) => root.getPropertyValue('--mc-' + id).trim() === value.trim()) ?? (value.trim() || null); };
+// which sprite a pseudo-element shows: compare its background with each --mc-* sprite drawn on a probe
+const bgWhich = (doc, w, el, pseudo) => {
+  const probe = doc.body.appendChild(doc.createElement('i'));
+  const bg = w.getComputedStyle(el, pseudo).backgroundImage;
+  const hit = ids.find((id) => { probe.style.backgroundImage = 'var(--mc-' + id + ')'; return w.getComputedStyle(probe).backgroundImage === bg; });
+  probe.remove();
+  return hit ?? (bg === 'none' ? null : bg.slice(0, 40));
+};
 window.addEventListener('load', () => {
-  const out = { cases: {}, sidebar: {}, stripped: [], rules: 0 };
+  const out = { cases: {}, sidebar: {}, drag: {}, settings: {}, stripped: [], rules: 0 };
   for (const f of document.querySelectorAll('iframe')) {
     const doc = f.contentDocument, w = f.contentWindow;
+    if (f.dataset.name.startsWith('settings:')) {
+      const scroll = doc.querySelector('[data-settings-page-scroll]'), after = w.getComputedStyle(scroll, '::after');
+      out.settings[f.dataset.name.slice(9)] = { corner: which(doc, w.getComputedStyle(scroll).getPropertyValue('--mset')), cornerShown: bgWhich(doc, w, scroll, '::after'),
+        size: after.width + '×' + after.height, nav: bgWhich(doc, w, doc.querySelector('[data-settings-section][aria-current]'), '::after') };
+      continue;
+    }
     if (f.dataset.name === 'typing a message') { doc.querySelector('.composer-tiptap').focus(); }
     const form = doc.querySelector('[data-chat-composer-form]');
     const before = w.getComputedStyle(form, '::before');
@@ -81,7 +118,9 @@ window.addEventListener('load', () => {
     if (f.id === 'f0') {
       out.stripped = w.__stripped; out.rules = doc.adoptedStyleSheets[0].cssRules.length;
       out.spritesFound = new Set(ids.map((id) => w.getComputedStyle(doc.documentElement).getPropertyValue('--mc-' + id))).size;
-      for (const row of doc.querySelectorAll('[data-sidebar-row]:not([aria-current])')) {
+      for (const row of doc.querySelectorAll('[data-drag]')) out.drag[row.dataset.drag] = [bgWhich(doc, w, row, '::before'), bgWhich(doc, w, row, '::after')];
+      out.notice = bgWhich(doc, w, doc.querySelector('[data-notice]'), '::before');
+      for (const row of doc.querySelectorAll('[data-sidebar-row]:not([aria-current]):not([data-drag])')) {
         out.sidebar[row.getAttribute('aria-label').split(', ')[1]] = which(doc, w.getComputedStyle(row).getPropertyValue('--ms'));
       }
     }

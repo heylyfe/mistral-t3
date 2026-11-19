@@ -8,7 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
-import { buildTestPage, CASES, SIDEBAR, STATE_IDS } from './mock-page.mjs';
+import { buildTestPage, CASES, SIDEBAR, SETTINGS, STATE_IDS } from './mock-page.mjs';
 
 const browser = [
   process.env.CHROME_PATH,
@@ -59,5 +59,28 @@ test('big cat listens while you type', opts, (t) => {
 for (const [word, expected] of SIDEBAR) {
   test(`sidebar shows ${expected ?? 'no cat'} for "${word}"`, opts, () => {
     assert.equal(results.sidebar[word], expected);
+  });
+}
+
+test('dragging a chat: a paw bats at it', opts, () => {
+  assert.equal(results.drag.moving[0], 'paw');
+  assert.equal(results.drag.pinning[0], 'paw');
+});
+
+test('settling a chat: paws swipe from both sides', opts, () => {
+  assert.deepEqual(results.drag.settling, ['paw', 'paw']);
+});
+
+test('the "Settled, Undo" notice gets a paw swipe', opts, () => {
+  assert.equal(results.notice, 'paw');
+});
+
+for (const [section, expected] of SETTINGS) {
+  test(`settings: ${section} page shows the ${expected} cat`, opts, () => {
+    const r = results.settings[section];
+    assert.equal(r.corner, expected);
+    assert.equal(r.cornerShown, expected);
+    assert.equal(r.size, '64px×48px');
+    assert.equal(r.nav, 'subagent');
   });
 }
