@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const STATE_IDS = ['idle', 'thinking', 'working', 'reading', 'delegating', 'subagent', 'waiting', 'error', 'done', 'sleeping', 'compacting', 'terminal', 'editing', 'browsing', 'planning', 'listening', 'grooming', 'chonk', 'painting', 'peek', 'paw'];
+export const STATE_IDS = ['idle', 'thinking', 'working', 'reading', 'delegating', 'subagent', 'waiting', 'error', 'done', 'sleeping', 'compacting', 'terminal', 'editing', 'browsing', 'planning', 'listening', 'grooming', 'chonk', 'painting', 'peek', 'paw', 'chase', 'scratch', 'nap', 'yarn'];
 
 const icon = (name) => `<svg class="lucide lucide-${name}" width="14" height="14"></svg>`;
 const live = (name) => `<div data-timeline-row-kind="work-live"><span class="live-tool-shine">${icon(name)} running</span></div>`;
@@ -42,6 +42,14 @@ const badge = (iconName, verb) => `<span role="status" class="pointer-events-non
 const DRAG_ROWS = `<a data-sidebar-row data-drag="moving" class="relative overflow-hidden shadow-lg" aria-label="Moved, Done, my-app">Moved</a>
   <a data-sidebar-row data-drag="pinning" aria-label="Pinning, Done, my-app">Pinning ${badge('pin', 'Pin')}</a>
   <a data-sidebar-row data-drag="settling" aria-label="Settling, Done, my-app">Settling ${badge('circle-check', 'Settle')}</a>`;
+// Popups and controls the extras decorate: [name, html, pseudo, expected sprite]
+export const EXTRAS = [
+  ['dropdown menu', '<div data-slot="menu-positioner" style="position:absolute;top:60px;left:300px"><div data-slot="menu-popup">Rename</div></div>', '::before', 'peek'],
+  ['select list', '<div data-slot="select-positioner" style="position:absolute;top:60px;left:400px"><div data-slot="select-popup">GPT</div></div>', '::before', 'peek'],
+  ['switch knob', '<button role="switch" data-slot="switch"><span data-slot="switch-thumb" style="display:block;width:16px;height:16px"></span></button>', '', 'peek'],
+  ['confirm dialog', '<div data-slot="alert-dialog-popup" style="position:fixed;top:100px;left:300px;width:300px;height:120px">Delete?</div>', '::after', 'waiting'],
+  ['command palette', '<div data-command-palette="true" style="position:fixed;top:40px;left:250px;width:400px;height:200px">Search</div>', '::after', 'reading'],
+];
 const NOTICE = '<div data-notice class="flex h-6 min-w-0 flex-1 flex-row-reverse overflow-hidden starting:opacity-0">Settled, Undo</div>';
 
 const settingsFrame = (theme, section) => `<!doctype html><html class="dark"><head><meta charset="utf-8">
@@ -71,9 +79,9 @@ main{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:
   <a data-sidebar-row aria-current="page" aria-label="Fix the bug, ${status}, my-app">Fix the bug</a>
   ${SIDEBAR.map(([w]) => `<a data-sidebar-row aria-label="Thread ${w}, ${w}, my-app">Thread · ${w}</a>`).join('')}
   ${DRAG_ROWS}${NOTICE}
-</div></div>
+</div></div>${EXTRAS.map(([, html]) => html).join('')}
 <main data-workspace-area="conversation">${timeline}
-<form data-chat-composer-form><div class="composer-tiptap" tabindex="0">${typing ? 'hello there' : '<p class="text-placeholder">Ask anything</p>'}</div><button type="submit">↑</button></form>
+<form data-chat-composer-form><div class="composer-tiptap" contenteditable="true" tabindex="0">${typing ? 'hello there' : '<p class="text-placeholder">Ask anything</p>'}</div><button type="submit">↑</button></form>
 </main>
 <script>${fs.readFileSync(path.join(ROOT, 'test/t3/loader.js'), 'utf8')}</script>
 </body></html>`;
@@ -108,7 +116,9 @@ window.addEventListener('load', () => {
     if (f.dataset.name.startsWith('settings:')) {
       const scroll = doc.querySelector('[data-settings-page-scroll]'), after = w.getComputedStyle(scroll, '::after');
       out.settings[f.dataset.name.slice(9)] = { corner: which(doc, w.getComputedStyle(scroll).getPropertyValue('--mset')), cornerShown: bgWhich(doc, w, scroll, '::after'),
-        size: after.width + '×' + after.height, nav: bgWhich(doc, w, doc.querySelector('[data-settings-section][aria-current]'), '::after') };
+        size: after.width + '×' + after.height, nav: bgWhich(doc, w, doc.querySelector('[data-settings-section][aria-current]'), '::after'),
+        // no pointer over the page: only the napping kitten shows, at home
+        chaser: [[doc.documentElement, '::before'], [doc.documentElement, '::after'], [doc.body, '::after']].map(([el, ps]) => bgWhich(doc, w, el, ps) + ':' + w.getComputedStyle(el, ps).width) };
       continue;
     }
     if (f.dataset.name === 'typing a message') { doc.querySelector('.composer-tiptap').focus(); }
@@ -120,6 +130,12 @@ window.addEventListener('load', () => {
       out.spritesFound = new Set(ids.map((id) => w.getComputedStyle(doc.documentElement).getPropertyValue('--mc-' + id))).size;
       for (const row of doc.querySelectorAll('[data-drag]')) out.drag[row.dataset.drag] = [bgWhich(doc, w, row, '::before'), bgWhich(doc, w, row, '::after')];
       out.notice = bgWhich(doc, w, doc.querySelector('[data-notice]'), '::before');
+      out.yarn = bgWhich(doc, w, doc.querySelector('[data-slot=sidebar-inner]'), '::after');
+      out.extras = Object.fromEntries(${JSON.stringify(EXTRAS.map(([n, h, ps]) => [n, ps]))}.map(([n, ps], i) => {
+        const el = doc.querySelector(['[data-slot=menu-positioner]', '[data-slot=select-positioner]', '[data-slot=switch-thumb]', '[data-slot=alert-dialog-popup]', '[data-command-palette]'][i]);
+        return [n, bgWhich(doc, w, el, ps || null)];
+      }));
+      out.cursor = { page: w.getComputedStyle(doc.body).cursor, button: w.getComputedStyle(doc.querySelector("button")).cursor, input: w.getComputedStyle(doc.querySelector('.composer-tiptap[contenteditable], [data-chat-composer-form] textarea') ?? doc.body).cursor.slice(0, 4) };
       for (const row of doc.querySelectorAll('[data-sidebar-row]:not([aria-current]):not([data-drag])')) {
         out.sidebar[row.getAttribute('aria-label').split(', ')[1]] = which(doc, w.getComputedStyle(row).getPropertyValue('--ms'));
       }

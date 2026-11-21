@@ -448,14 +448,78 @@ S.painting = {
   ),
 };
 
-const ORDER = ['idle', 'thinking', 'working', 'reading', 'delegating', 'subagent', 'waiting', 'error', 'done', 'sleeping', 'compacting', 'terminal', 'editing', 'browsing', 'planning', 'listening', 'grooming', 'chonk', 'painting', 'peek', 'paw'];
+// ── Toys: the mouse-chasing kitten, cursors and the yarn ball ──────
+// Run cycle: the stretched leap and the gathered take-off, swapped.
+const RUN = `<g class='R'><g class='f1'>${drawMap(TINY_LEAP)}</g><g class='f2'><g transform='translate(0 1)'>${drawMap(TINY_TAKEOFF)}</g></g></g>`;
+S.chase = {
+  label: 'Chase', note: 'runs after your mouse pointer (Settings)',
+  svg: svg(RUN, BASE + FLIP('.R', '.3s'), { w: 18, h: 12 }),
+};
+// Caught it: up on its back legs, paw swiping up-right, claw marks flash where the pointer is.
+const SWIPE_UP = [[8, 6], [9, 5], [10, 4], [11, 3], [9, 6], [10, 5], [11, 4]], SWIPE_DOWN = [[8, 7], [9, 7], [10, 7], [11, 6], [9, 6], [10, 6], [11, 5]];
+S.scratch = {
+  label: 'Scratch', note: 'catches the pointer and scratches at it',
+  svg: svg(
+    `<g transform='translate(0 1)'>${drawMap(TINY)}</g>` + P([[2, 4], [4, 4]], '#fff')
+      + `<g class='SW'><g class='f1'>${P(SWIPE_UP, CREAM)}${P([[12, 3]], '#fff')}</g>`
+      + `<g class='f2'>${P(SWIPE_DOWN, CREAM)}${P([[15, 0], [14, 1], [13, 2], [15, 2], [14, 3], [13, 4]], '#fff')}</g></g>`,
+    BASE + FLIP('.SW', '.36s'),
+    { w: 16, h: 14 },
+  ),
+};
+// Idle too long: curls up next to the pointer.
+const NAP = ['.#..#.........', '.####..######.', '#s##s#########', '#cccc#########', '##############', '.#############', '..###########.'];
+S.nap = {
+  label: 'Nap', note: 'naps by the pointer when you leave the mouse alone',
+  svg: svg(
+    `<g class='NB'><g transform='translate(0 4)'>${Object.entries({ '#': CREAM, s: SHUT, c: '#F05A1A' }).map(([ch, f]) => P(at(NAP, ch), f)).join('')}</g></g>`
+      + P(glyph(ZG, 14, 0), '#FFE680', 'zz'),
+    BASE + '.NB{animation:h 3s steps(1) infinite}' + hop('h', [[0, 0, 0], [50, 0, -1]])
+      + '.zz{animation:z 3s steps(3) infinite}@keyframes z{0%{opacity:1;transform:translateY(2px)}100%{opacity:0;transform:translateY(-1px)}}',
+    { w: 18, h: 11 },
+  ),
+};
+// The kitten chases a rainbow ball of yarn along the bottom of the sidebar now and then.
+S.yarn = {
+  label: 'Yarn', note: 'chases a rainbow ball of yarn along the sidebar',
+  svg: svg(
+    RUN + `<g class='Y2'>${P(rows({ 7: [21, 22] }), Y)}${P(rows({ 8: [20, 23] }), OL)}${P(rows({ 9: [20, 23] }), OD)}${P(rows({ 10: [21, 22] }), RD)}${P([[22, 8], [21, 9]], O)}</g>`
+      + P([[18, 11], [19, 11], [20, 11]], RD),
+    BASE + FLIP('.R', '.3s') + '.Y2{animation:b .3s steps(1) infinite}' + hop('b', [[0, 0, 0], [50, 0, -1]]),
+    { w: 24, h: 12 },
+  ),
+};
+
+// Pixel cursors, drawn at 2x so each pixel is 2 screen pixels. Outlines are added around the fill.
+const outlined = (fills) => {
+  const filled = new Set(fills.map(([x, y]) => key([x, y])));
+  const edge = [];
+  for (const [x, y] of fills) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    const k = key([x + dx, y + dy]);
+    if (!filled.has(k) && !edge.some((e) => key(e) === k)) edge.push([x + dx, y + dy]);
+  }
+  return edge;
+};
+const cursorSvg = (body) => `<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 13 13' shape-rendering='crispEdges'>${body}</svg>`;
+const ARROW = rows({ 1: [1, 1], 2: [1, 2], 3: [1, 3], 4: [1, 4], 5: [1, 5], 6: [1, 6], 7: [1, 7], 8: [[1, 3], [5, 5]], 9: [[1, 1], [4, 5]], 10: [5, 6], 11: [5, 6] });
+const TOES = rows({ 1: [[3, 4], [7, 8]], 2: [[3, 4], [7, 8]], 4: [[0, 1], [10, 11]], 5: [[0, 1], [10, 11]] });
+const PAD = rows({ 5: [4, 7], 6: [3, 8], 7: [3, 8], 8: [3, 8], 9: [4, 7] });
+const CUR = {
+  arrow: cursorSvg(P(outlined(ARROW), INK) + P(ARROW, O) + P(ARROW.filter(([x]) => x === 1), Y)),
+  paw: cursorSvg(P(outlined([...TOES, ...PAD]), INK) + P([...TOES, ...PAD], PINK)),
+  claws: cursorSvg(P(outlined([...TOES, ...PAD]), INK) + P([...TOES, ...PAD], PINK) + P([[3, 0], [8, 0], [0, 3], [11, 3]], '#fff')),
+};
+
+const ORDER = ['idle', 'thinking', 'working', 'reading', 'delegating', 'subagent', 'waiting', 'error', 'done', 'sleeping', 'compacting', 'terminal', 'editing', 'browsing', 'planning', 'listening', 'grooming', 'chonk', 'painting', 'peek', 'paw', 'chase', 'scratch', 'nap', 'yarn'];
 
 // ── Outputs ────────────────────────────────────────────────────────
 const uri = (s) => 'data:image/svg+xml,' + s.replace(/%/g, '%25').replace(/#/g, '%23').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, "'");
 for (const id of ORDER) if (/\\/.test(S[id].svg)) throw new Error(`${id}: backslash in svg`);
 
 for (const id of ORDER) write(`cats/cat-${id}.svg`, S[id].svg);
-const spriteVars = ':root{' + ORDER.map((id) => `--mc-${id}:url("${uri(S[id].svg)}")`).join(';') + '}';
+const spriteVars = ':root{' + ORDER.map((id) => `--mc-${id}:url("${uri(S[id].svg)}")`).join(';')
+  + ';' + Object.entries(CUR).map(([id, c]) => `--mk-${id}:url("${uri(c)}")`).join(';') + '}';
+for (const [id, c] of Object.entries(CUR)) write(`cats/cursor-${id}.svg`, c);
 write('cats/mistral-cats.css', spriteVars + '\n');
 
 const strip = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s*\n\s*/g, '');

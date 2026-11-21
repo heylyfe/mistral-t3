@@ -89,4 +89,42 @@
 :where(body:has([data-settings-section="/settings/about"][aria-current=page])){--mset:var(--mc-chonk)}
 [data-settings-page-scroll]::after{content:"";display:block;position:sticky;bottom:12px;width:64px;height:48px;margin:24px 16px 0 auto;image-rendering:pixelated;pointer-events:none;background:var(--mset) center/contain no-repeat}
 
+/* 10. Settings: a kitten chases your pointer. The innermost hovered element becomes an anchor;
+       after .8s on it the kitten has caught up and scratches, after 10s it naps beside it.
+       Each pseudo shows only in its state: anchor-size() of a missing anchor falls back to -1px,
+       and the names all sit on the same element, so their widths cancel out. */
+[data-settings-page-scroll] :hover:not(:has(:hover),[class*=animate-]){animation:mc-ptr 10s steps(1) forwards}
+@keyframes mc-ptr{0%{anchor-name:--mcp}8%{anchor-name:--mcp,--mcn}100%{anchor-name:--mcp,--mcn,--mcz}}
+:root:has([data-settings-page-scroll])::before,:root:has([data-settings-page-scroll])::after,body:has([data-settings-page-scroll])::after{content:"";position:fixed;z-index:2147483000;pointer-events:none;image-rendering:pixelated;background:left top/auto 100% no-repeat;height:24px;
+  left:calc(anchor(--mcp center,calc(100vw - 180px)) - 34px);top:calc(anchor(--mcp center,calc(100vh - 34px)) - 4px)}
+:root:has([data-settings-page-scroll])::before{background-image:var(--mc-chase);transition:left .6s steps(8),top .6s steps(8);
+  width:clamp(0px,(anchor-size(--mcp width,-1px) + 1px)*99 - (anchor-size(--mcn width,-1px) + 1px)*999,36px)}
+:root:has([data-settings-page-scroll])::after{background-image:var(--mc-scratch);height:28px;top:calc(anchor(--mcp center,0px) - 8px);
+  width:clamp(0px,(anchor-size(--mcn width,-1px) + 1px)*99 - (anchor-size(--mcz width,-1px) + 1px)*999,32px)}
+body:has([data-settings-page-scroll])::after{background-image:var(--mc-nap);height:22px;
+  width:clamp(0px,36px - (anchor-size(--mcp width,-1px) + 1px)*999 + (anchor-size(--mcz width,-1px) + 1px)*999,36px)}
+
+/* 11. Pixel cursors: an orange arrow, a paw over anything clickable, claws out while you click */
+html{cursor:var(--mk-arrow) 2 2,default}
+:is(a[href],button,[role=button],[role=menuitem],[role=menuitemradio],[role=option],[role=tab],[role=switch],[role=checkbox],summary):not(:disabled,[aria-disabled=true]){cursor:var(--mk-paw) 8 2,pointer}
+:is(a[href],button,[role=button],[role=menuitem],[role=menuitemradio],[role=option],[role=tab],[role=switch],[role=checkbox],summary):not(:disabled,[aria-disabled=true]):active{cursor:var(--mk-claws) 8 2,pointer}
+input,textarea,[contenteditable=true],[contenteditable=""]{cursor:text}
+
+/* 12. A kitten peeks over every dropdown; switch knobs get a cat face */
+:is([data-slot=menu-positioner],[data-slot=select-positioner],[data-slot=combobox-positioner])::before{content:"";position:absolute;z-index:1;right:14px;bottom:calc(100% - 2px);width:14px;height:10px;image-rendering:pixelated;pointer-events:none;background:var(--mc-peek) center/contain no-repeat;animation:mc-peek .24s steps(3) both}
+[data-slot=switch-thumb]{background-image:var(--mc-peek);background-position:center;background-size:14px 10px;background-repeat:no-repeat;image-rendering:pixelated}
+
+/* 13. Confirm dialogs get a worried cat; the command palette gets one reading along */
+:is([data-slot=alert-dialog-popup],[data-command-palette])::after{content:"";position:absolute;z-index:1;top:10px;right:12px;width:32px;height:24px;image-rendering:pixelated;pointer-events:none;background:var(--mc-waiting) center/contain no-repeat}
+[data-command-palette]::after{background-image:var(--mc-reading)}
+
+/* 14. Now and then a kitten chases a ball of yarn along the bottom of the sidebar */
+[data-slot=sidebar-inner]{position:relative}
+[data-slot=sidebar-inner]::after{content:"";position:absolute;z-index:3;bottom:4px;left:-52px;width:48px;height:24px;image-rendering:pixelated;pointer-events:none;background:var(--mc-yarn) center/contain no-repeat;animation:mc-yarn 90s infinite}
+@keyframes mc-yarn{0%,90%{left:-52px;animation-timing-function:steps(1)}91%{left:-52px;animation-timing-function:steps(90)}100%{left:100%}}
+
+/* 15. Hover the T3 logo: the VIBE tag says MIAOU */
+a[aria-label="T3 Code home"]:hover::after{content:"MIAOU"}
+
+@media (prefers-reduced-motion:reduce){:root::before{transition:none}[data-slot=sidebar-inner]::after{display:none}}
 @media (prefers-reduced-motion:reduce){[data-chat-composer-form]::after,[data-sidebar-row]::before,[data-sidebar-row]::after,[data-settings-section]::before{animation:none}[class*="starting:opacity-0"]::before{display:none}}

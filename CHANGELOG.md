@@ -2,6 +2,17 @@
 
 All notable changes to Mistral T3. Versions follow [semver](https://semver.org); betas are pre-releases.
 
+## [1.0.0-beta.3] - 2026-11-21
+
+### Added
+- Settings: a tiny cat chases your mouse pointer, scratches at it when it catches up, and naps beside it if you leave the mouse alone for 10 seconds. Pure CSS, using anchor positioning.
+- Pixel cursors: an orange arrow, a paw over clickable things, claws out while clicking.
+- A kitten peeks over every dropdown; switch knobs get a cat face.
+- Confirm dialogs get a worried cat, the command palette a reading cat.
+- Now and then a kitten chases a rainbow ball of yarn along the bottom of the sidebar.
+- Hovering the T3 logo turns the VIBE tag into MIAOU.
+- New sprites: chase, scratch, nap, yarn (25 in all), plus 3 cursors. 49 tests.
+
 ## [1.0.0-beta.2] - 2026-11-19
 
 ### Added
@@ -25,5 +36,6 @@ All notable changes to Mistral T3. Versions follow [semver](https://semver.org);
 - Tests using T3 Code's own theme filter and loader, including a headless-browser run over 25 situations; `npm run preview` writes a fake T3 Code page for each one.
 - CI and release workflows, issue templates and a PR template.
 
+[1.0.0-beta.3]: https://github.com/heylyfe/mistral-t3/releases/tag/v1.0.0-beta.3
 [1.0.0-beta.2]: https://github.com/heylyfe/mistral-t3/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/heylyfe/mistral-t3/releases/tag/v1.0.0-beta.1

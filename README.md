@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/heylyfe/mistral-t3/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/heylyfe/mistral-t3?include_prereleases&label=release&color=FF8205"></a>
   <a href="https://github.com/heylyfe/mistral-t3/actions/workflows/test.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/heylyfe/mistral-t3/test.yml?branch=main&label=tests"></a>
-  <img alt="Theme size" src="https://img.shields.io/badge/theme_css-82k%20%2F%20100k-FFAF00">
+  <img alt="Theme size" src="https://img.shields.io/badge/theme_css-94k%20%2F%20100k-FFAF00">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-FA500F"></a>
 </p>
 
@@ -24,8 +24,9 @@ A [T3 Code](https://github.com/pingdotgg/t3code) theme in the Mistral rainbow, w
 | <img src="cats/cat-done.svg" width="144" alt=""><br>**Done**<br><sub>cheering hop, confetti</sub> | <img src="cats/cat-sleeping.svg" width="144" alt=""><br>**Sleeping**<br><sub>eyes shut, Zzz</sub> | <img src="cats/cat-compacting.svg" width="144" alt=""><br>**Compacting**<br><sub>kneads the conversation down</sub> | <img src="cats/cat-terminal.svg" width="144" alt=""><br>**Terminal**<br><sub>runs a command in a tiny shell</sub> |
 | <img src="cats/cat-editing.svg" width="144" alt=""><br>**Editing**<br><sub>knocks the old line off the table</sub> | <img src="cats/cat-browsing.svg" width="144" alt=""><br>**Browsing**<br><sub>globe spins, mistral wind blows</sub> | <img src="cats/cat-planning.svg" width="144" alt=""><br>**Planning**<br><sub>ticks off a checklist</sub> | <img src="cats/cat-listening.svg" width="144" alt=""><br>**Listening**<br><sub>watches you type, “…” bubble</sub> |
 | <img src="cats/cat-grooming.svg" width="144" alt=""><br>**Grooming**<br><sub>licks a paw between turns</sub> | <img src="cats/cat-chonk.svg" width="144" alt=""><br>**Le gros chaton**<br><sub>extra chonk, with a croissant</sub> | <img src="cats/cat-painting.svg" width="144" alt=""><br>**Painting**<br><sub>paints the rainbow (Appearance settings)</sub> | <img src="cats/cat-peek.svg" width="56" alt=""> <img src="cats/cat-paw.svg" width="72" alt=""><br>**Peek & paw**<br><sub>for hovering and dragging chats</sub> |
+| <img src="cats/cat-chase.svg" width="108" alt=""><br>**Chase**<br><sub>runs after your pointer</sub> | <img src="cats/cat-scratch.svg" width="96" alt=""><br>**Scratch**<br><sub>caught it!</sub> | <img src="cats/cat-nap.svg" width="108" alt=""><br>**Nap**<br><sub>dozes by an idle pointer</sub> | <img src="cats/cat-yarn.svg" width="144" alt=""><br>**Yarn**<br><sub>a sidebar chase, now and then</sub> |
 
-21 sprites, each a single SVG of 1–6 KB, drawn as true pixel art: every frame is whole pixels, and motion is either a whole-pixel jump or a swap between hand-drawn frames. The animation is CSS inside the SVG: no GIFs, no JavaScript. With reduced motion turned on in your system, every cat holds still. Download [`gallery.html`](gallery.html) and open it in a browser for a closer look.
+25 sprites and 3 cursors, each a single SVG of 1–6 KB, drawn as true pixel art: every frame is whole pixels, and motion is either a whole-pixel jump or a swap between hand-drawn frames. The animation is CSS inside the SVG: no GIFs, no JavaScript. With reduced motion turned on in your system, every cat holds still. Download [`gallery.html`](gallery.html) and open it in a browser for a closer look.
 
 ## Where they show up
 
@@ -37,6 +38,12 @@ A [T3 Code](https://github.com/pingdotgg/t3code) theme in the Mistral rainbow, w
 - **In the sidebar:** each thread gets a cat for its status (working, waiting, error, done or asleep). Hover a chat and the status cat steps aside while a tiny cat peeks up from under the row.
 - **Moving and settling chats:** drag a chat (or sweep across several) and the cat's paw bats at it. Drop it on **Settle** and a second paw swipes in from the other side, and the "Settled, Undo" notice gets one last swipe.
 - **In Settings:** a kitten sits on the section you're in, a tiny cat peeks out of the others when you hover them, and a cat in the corner of the page matches the section: it paints the Mistral rainbow on Appearance, types on Keybindings, sends tiny cats off on Providers, naps on Archived and turns into *le gros chaton* on About.
+- **Your pointer, in Settings:** a tiny cat chases it. When it catches up it scratches at it; leave the mouse alone for 10 seconds and it curls up for a nap right next to it. (Pure CSS: the hovered element becomes a CSS anchor and the kitten runs to it.)
+- **Pixel cursors everywhere:** an orange pixel arrow, a paw over anything clickable, and the claws come out while you click.
+- **Dropdowns and switches:** a kitten peeks over the top of every dropdown menu, and every switch knob has a cat face.
+- **Dialogs:** confirm dialogs get a worried cat; the command palette gets one reading along with a magnifier.
+- **The sidebar, now and then:** a kitten chases a rainbow ball of yarn along the bottom.
+- **The logo:** hover the T3 logo and the VIBE tag says MIAOU.
 
 ## The theme
 
@@ -46,7 +53,7 @@ A [T3 Code](https://github.com/pingdotgg/t3code) theme in the Mistral rainbow, w
 
 ## Install
 
-You need a **T3 Code nightly from 14 Nov 2026 or later**. Earlier versions cap theme CSS at 20,000 characters; this theme uses about 82,000 (the limit is now 100,000).
+You need a **T3 Code nightly from 14 Nov 2026 or later**. Earlier versions cap theme CSS at 20,000 characters; this theme uses about 94,000 (the limit is now 100,000).
 
 **In the app:** download `t3-mistral.json` from the [latest release](../../releases), open **Settings → Appearance → Add a theme**, drop the file in, and pick **Mistral T3**.
 
@@ -71,6 +78,7 @@ t3 theme set ./t3-mistral.json   # undo with: t3 theme clear
 | The theme won't import, or the CSS is too long | Update to a T3 Code nightly from 14 Nov 2026 or later. |
 | A cat shows the wrong state or sits in the wrong place | A T3 Code update probably changed the page. [Open an issue](../../issues/new/choose) with your version and a screenshot. |
 | The cats don't move | Your system is set to reduce motion, and the cats respect that. |
+| You'd rather have your normal cursor | Delete section 11 in [`src/mod.css`](src/mod.css) and run `npm run build`. |
 | No cats in the sidebar | Sidebar cats match English status words, so they don't show in other languages. |
 | The big cat covers something | Change its size or position in [`src/mod.css`](src/mod.css) and run `npm run build`. |
 
@@ -87,7 +95,7 @@ npm run preview # writes mock-preview.html: a fake T3 Code window for every situ
 `npm test` runs two sets of checks with Node's built-in test runner (nothing to install):
 
 - **Theme file:** T3 Code's theme schema and 100k limit, T3 Code's own CSS filter (copied into `test/t3/`), self-contained SVGs, and a fresh build matching the committed files.
-- **Real browser:** a headless Chrome or Edge loads a fake T3 Code page, applies the theme with T3 Code's own loader, and checks which cat shows in 35 situations: every tool, approvals, questions, errors, which state wins, typing, every sidebar status, dragging and settling chats, and the settings pages. Skipped if no Chrome or Edge is found (set `CHROME_PATH`).
+- **Real browser:** a headless Chrome or Edge loads a fake T3 Code page, applies the theme with T3 Code's own loader, and checks which cat shows in 42 situations: every tool, approvals, questions, errors, which state wins, typing, every sidebar status, dragging and settling chats, the settings pages, dropdowns, dialogs, switches and the cursors. Skipped if no Chrome or Edge is found (set `CHROME_PATH`).
 
 | File | What it holds |
 | --- | --- |
@@ -100,7 +108,7 @@ The cat is traced as a letter grid at the top of `build.mjs` (`MAP`), one letter
 
 **How it works:** T3 Code themes are CSS only, so every sprite is a `data:` URI in a CSS variable. The CSS reads state from attributes T3 Code already renders (`data-timeline-row-kind`, `data-v2-item-type`, the sidebar's `aria-label`, the lucide icon of the running tool), and `body:has(...)` rules pick the cat. They're wrapped in `:where()` so the more urgent state, written later, wins.
 
-**Known limits:** only T3 Code's documented hooks are guaranteed; the tool icons, sidebar status words, the drag badge and the undo notice's classes may change in an update. Works on web and desktop; T3 Code mobile doesn't use themes.
+**Known limits:** only T3 Code's documented hooks are guaranteed; the tool icons, sidebar status words, the drag badge and the undo notice's classes may change in an update. The pointer chase needs CSS anchor positioning (any T3 Code from 2025 on has it). Works on web and desktop; T3 Code mobile doesn't use themes.
 
 ### Contributing
 

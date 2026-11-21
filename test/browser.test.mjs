@@ -8,7 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
-import { buildTestPage, CASES, SIDEBAR, SETTINGS, STATE_IDS } from './mock-page.mjs';
+import { buildTestPage, CASES, SIDEBAR, SETTINGS, EXTRAS, STATE_IDS } from './mock-page.mjs';
 
 const browser = [
   process.env.CHROME_PATH,
@@ -82,5 +82,20 @@ for (const [section, expected] of SETTINGS) {
     assert.equal(r.cornerShown, expected);
     assert.equal(r.size, '64px×48px');
     assert.equal(r.nav, 'subagent');
+    assert.deepEqual(r.chaser, ['chase:0px', 'scratch:0px', 'nap:36px'], 'kitten naps at home until the pointer comes in');
   });
 }
+
+for (const [name, , , expected] of EXTRAS) {
+  test(`${name} gets the ${expected} cat`, opts, () => assert.equal(results.extras[name], expected));
+}
+
+test('a kitten chases yarn along the sidebar', opts, () => assert.equal(results.yarn, 'yarn'));
+
+test('pixel cursors: arrow on the page, paw on buttons, text cursor in the composer', opts, () => {
+  assert.match(results.cursor.page, /^url\("data:image\/svg/);
+  assert.match(results.cursor.button, /^url\("data:image\/svg/);
+  assert.match(results.cursor.page, /\) 2 2, default$/);
+  assert.match(results.cursor.button, /\) 8 2, pointer$/);
+  assert.equal(results.cursor.input, 'text');
+});
