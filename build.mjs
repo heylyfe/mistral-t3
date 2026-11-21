@@ -458,27 +458,47 @@ S.chase = {
 // Caught it: up on its back legs, paw swiping up-right, claw marks flash where the pointer is.
 const SWIPE_UP = [[8, 6], [9, 5], [10, 4], [11, 3], [9, 6], [10, 5], [11, 4]], SWIPE_DOWN = [[8, 7], [9, 7], [10, 7], [11, 6], [9, 6], [10, 6], [11, 5]];
 S.scratch = {
-  label: 'Scratch', note: 'catches the pointer and scratches at it',
+  label: 'Scratch', note: 'catches the pointer and scratches at it, furious',
   svg: svg(
-    `<g transform='translate(0 1)'>${drawMap(TINY)}</g>` + P([[2, 4], [4, 4]], '#fff')
+    `<g class='SK'><g transform='translate(0 5)'>${drawMap(TINY.map((r, y) => (y >= 7 && y <= 11 ? r.slice(0, 8) : r)))}${P([[2, 3], [4, 3]], RD)}`
       + `<g class='SW'><g class='f1'>${P(SWIPE_UP, CREAM)}${P([[12, 3]], '#fff')}</g>`
-      + `<g class='f2'>${P(SWIPE_DOWN, CREAM)}${P([[15, 0], [14, 1], [13, 2], [15, 2], [14, 3], [13, 4]], '#fff')}</g></g>`,
-    BASE + FLIP('.SW', '.36s'),
-    { w: 16, h: 14 },
+      + `<g class='f2'>${P(SWIPE_DOWN, CREAM)}${P([[15, 0], [14, 1], [13, 2], [15, 2], [14, 3], [13, 4]], '#fff')}${P([[12, -1], [11, 0], [15, 4]], Y)}</g></g></g></g>`
+      // the 💢 anger mark: small, then big
+      + `<g class='AN'><g class='f1'>${P(glyph('#.#/.../#.#', 7, 1), RD)}</g><g class='f2'>${P(glyph('##.##/#...#/...../#...#/##.##', 6, 0), RD)}</g></g>`,
+    BASE + FLIP('.SW', '.36s') + FLIP('.AN', '.36s')
+      + '.SK{animation:sk .36s steps(1) infinite}' + hop('sk', [[0, 0, 0], [50, 1, 0]]),
+    { w: 16, h: 19 },
   ),
 };
-// Idle too long: curls up next to the pointer.
-const NAP = ['.#..#.........', '.####..######.', '#s##s#########', '#cccc#########', '##############', '.#############', '..###########.'];
+// Idle too long: dozes in a loaf next to the pointer.
+const NAP = [
+  '...k.....k.......kkkk..',
+  '..kpk...kpk.....kwwwwk.',
+  '.kwwwkkkwwwk.....kkkwwk',
+  '.kwwwwwwwwwk.......kwwk',
+  '.kwkkwwwkkwkkkkkkkkkwwk',
+  '.kpwwwkwwwpwwwwwwwwwwk.',
+  '.kwwwkwkwwwwwwwwwwwwwk.',
+  '.kwwwwwwwwwwwwwwwwwwgk.',
+  'kkwwwwwwwwwwwwwwwwwggk.',
+  'kwwkkwwwwwkkwwwwwwgggk.',
+  'kkkk.kkkkkkkkkkkkkkkkk.',
+];
+// k = outline, w = white fur, g = soft grey shade, p = pink ears and blush
+const NAP_COLORS = { w: '#FFFFFF', g: '#D9D6D2', p: '#F7B6B6', k: '#2B2622' };
 S.nap = {
-  label: 'Nap', note: 'naps by the pointer when you leave the mouse alone',
+  label: 'Nap', note: 'a little white cat curled up asleep, Zzz',
   svg: svg(
-    `<g class='NB'><g transform='translate(0 4)'>${Object.entries({ '#': CREAM, s: SHUT, c: '#F05A1A' }).map(([ch, f]) => P(at(NAP, ch), f)).join('')}</g></g>`
-      + P(glyph(ZG, 14, 0), '#FFE680', 'zz'),
-    BASE + '.NB{animation:h 3s steps(1) infinite}' + hop('h', [[0, 0, 0], [50, 0, -1]])
-      + '.zz{animation:z 3s steps(3) infinite}@keyframes z{0%{opacity:1;transform:translateY(2px)}100%{opacity:0;transform:translateY(-1px)}}',
-    { w: 18, h: 11 },
+    `<g class='nb'><g transform='translate(2 3)'>${Object.entries(NAP_COLORS).map(([ch, fill]) => P(at(NAP, ch), fill)).join('')}</g></g>`
+      + `<g fill='#FFAF00'>${P(glyph('##./.##', 13, 3), null, 'z')}${P(glyph('###./.###', 16, 1), null, 'z m')}${P(glyph('####../..####', 20, 0), null, 'z l')}</g>`,
+    '.nb{animation:nb 3s steps(1) infinite}@keyframes nb{50%{transform:translateY(-1px)}}'
+      + '.z{opacity:0;animation:z 3s steps(1) infinite}.m{animation-delay:1s}.l{animation-delay:2s}'
+      + '@keyframes z{0%{opacity:1;transform:translateY(1px)}33%{opacity:.7;transform:none}66%,100%{opacity:0}}'
+      + '@media(prefers-reduced-motion:reduce){*{animation:none!important}}',
+    { w: 28, h: 14 },
   ),
 };
+
 // The kitten chases a rainbow ball of yarn along the bottom of the sidebar now and then.
 S.yarn = {
   label: 'Yarn', note: 'chases a rainbow ball of yarn along the sidebar',

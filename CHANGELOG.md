@@ -2,6 +2,12 @@
 
 All notable changes to Mistral T3. Versions follow [semver](https://semver.org); betas are pre-releases.
 
+## [1.0.0-beta.4] - 2026-11-21
+
+### Changed
+- Redrew the napping cat as a little white cat with a dark outline, pink ears and blush, closed eyes and a curled-up tail, loafing under rising Zzz.
+- Scratching is angrier: red eyes, a flashing 💢 mark, a shake, sparks and claw marks; the swiping arm no longer blends into the tail.
+
 ## [1.0.0-beta.3] - 2026-11-21
 
 ### Added
@@ -36,6 +42,7 @@ All notable changes to Mistral T3. Versions follow [semver](https://semver.org);
 - Tests using T3 Code's own theme filter and loader, including a headless-browser run over 25 situations; `npm run preview` writes a fake T3 Code page for each one.
 - CI and release workflows, issue templates and a PR template.
 
+[1.0.0-beta.4]: https://github.com/heylyfe/mistral-t3/releases/tag/v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/heylyfe/mistral-t3/releases/tag/v1.0.0-beta.3
 [1.0.0-beta.2]: https://github.com/heylyfe/mistral-t3/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/heylyfe/mistral-t3/releases/tag/v1.0.0-beta.1

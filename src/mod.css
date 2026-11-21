@@ -99,10 +99,11 @@
   left:calc(anchor(--mcp center,calc(100vw - 180px)) - 34px);top:calc(anchor(--mcp center,calc(100vh - 34px)) - 4px)}
 :root:has([data-settings-page-scroll])::before{background-image:var(--mc-chase);transition:left .6s steps(8),top .6s steps(8);
   width:clamp(0px,(anchor-size(--mcp width,-1px) + 1px)*99 - (anchor-size(--mcn width,-1px) + 1px)*999,36px)}
-:root:has([data-settings-page-scroll])::after{background-image:var(--mc-scratch);height:28px;top:calc(anchor(--mcp center,0px) - 8px);
+:root:has([data-settings-page-scroll])::after{background-image:var(--mc-scratch);height:38px;top:calc(anchor(--mcp center,0px) - 18px);
   width:clamp(0px,(anchor-size(--mcn width,-1px) + 1px)*99 - (anchor-size(--mcz width,-1px) + 1px)*999,32px)}
-body:has([data-settings-page-scroll])::after{background-image:var(--mc-nap);height:22px;
-  width:clamp(0px,36px - (anchor-size(--mcp width,-1px) + 1px)*999 + (anchor-size(--mcz width,-1px) + 1px)*999,36px)}
+body:has([data-settings-page-scroll])::after{background-image:var(--mc-nap);height:28px;
+  left:calc(anchor(--mcp center,calc(100vw - 180px)) - 54px);
+  width:clamp(0px,56px - (anchor-size(--mcp width,-1px) + 1px)*999 + (anchor-size(--mcz width,-1px) + 1px)*999,56px)}
 
 /* 11. Pixel cursors: an orange arrow, a paw over anything clickable, claws out while you click */
 html{cursor:var(--mk-arrow) 2 2,default}

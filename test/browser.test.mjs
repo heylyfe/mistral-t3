@@ -82,7 +82,7 @@ for (const [section, expected] of SETTINGS) {
     assert.equal(r.cornerShown, expected);
     assert.equal(r.size, '64px×48px');
     assert.equal(r.nav, 'subagent');
-    assert.deepEqual(r.chaser, ['chase:0px', 'scratch:0px', 'nap:36px'], 'kitten naps at home until the pointer comes in');
+    assert.deepEqual(r.chaser, ['chase:0px', 'scratch:0px', 'nap:56px'], 'kitten naps at home until the pointer comes in');
   });
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "mistral-t3",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "private": true,
   "description": "Mistral T3: the animated Mistral Large 4 cat for every agent state in T3 Code, in the Mistral rainbow",
   "type": "module",
